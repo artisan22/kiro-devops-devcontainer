@@ -1,0 +1,6 @@
+# Container and agent configuration control what runs on every dev's machine and
+# what the AI agent may do, so changes need an owner's review.
+# Replace @artisan22 with a team handle after the repo moves to an organization.
+/.devcontainer/  @artisan22
+/.kiro/          @artisan22
+/.github/        @artisan22
