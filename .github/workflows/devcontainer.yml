@@ -1,0 +1,35 @@
+name: devcontainer-build
+
+# Only run when something that affects the container changes.
+on:
+  pull_request:
+    paths: [".devcontainer/**", "scripts/**", ".github/workflows/devcontainer.yml"]
+  push:
+    branches: [main]
+    paths: [".devcontainer/**", "scripts/**", ".github/workflows/devcontainer.yml"]
+  workflow_dispatch:
+
+# Least privilege: this job only reads the repo.
+permissions:
+  contents: read
+
+# Cancel superseded runs on the same ref to save runner minutes.
+concurrency:
+  group: devcontainer-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # A hung installer should fail the job, not burn hours of minutes.
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      # Builds the image from .devcontainer/ the way VS Code does, runs the
+      # lifecycle commands, then executes runCmd inside the container.
+      # STRICT=1 makes verify-tools.sh fail the job if any tool is missing or broken.
+      # Limitation: builds linux/amd64 only. Apple Silicon needs a manual check.
+      - uses: devcontainers/ci@v0.3
+        with:
+          push: never
+          runCmd: STRICT=1 bash scripts/verify-tools.sh
