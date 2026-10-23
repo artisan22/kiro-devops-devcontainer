@@ -76,3 +76,20 @@ Tool versions are pinned for reproducible builds and bumped by hand.
 `.github/workflows/devcontainer.yml` builds the container and runs
 `STRICT=1 bash scripts/verify-tools.sh` on changes to the container config.
 It builds linux/amd64 only; verify Apple Silicon manually.
+
+
+## Windows and Mac notes
+
+**Both:** run `git config --global core.autocrlf input`, and give Docker Desktop at
+least 4 CPUs and 8 GB memory. `.gitattributes` forces LF on shell scripts so they run
+inside the Linux container.
+
+**Windows:** use the WSL 2 engine in Docker Desktop. Keep the `ssh-agent` service
+running if you use SSH keys; VS Code forwards it into the container. Files on `C:\`
+are slow under Docker; if installs feel slow, consider keeping the checkout inside
+WSL2 or a Docker volume (this affects whether Kiro IDE on the host can see the files).
+
+**Mac:** use Docker Desktop's default (VirtioFS) file sharing. Tested on Apple Silicon
+(arm64); CI covers Intel/AMD (amd64), so both architectures have been verified.
+
+**Credentials** are stored in named volumes, so each dev signs in once per machine.
