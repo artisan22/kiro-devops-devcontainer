@@ -46,6 +46,10 @@
     "AWS_PAGER": ""
   },
 
+  // Runs once after creation: installs Python-based tools, then prints versions.
+  "postCreateCommand": "bash .devcontainer/post-create.sh",  
+
+
   "customizations": {
     "vscode": {
       "extensions": [
