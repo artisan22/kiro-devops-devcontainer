@@ -1,0 +1,15 @@
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+.env
+.env.*
+*.pem
+*.key
+.databricks/
+.bundle/
+__pycache__/
+.venv/
+node_modules/
+.DS_Store
