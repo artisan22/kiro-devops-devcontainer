@@ -6,9 +6,8 @@
       "env": { "FASTMCP_LOG_LEVEL": "ERROR" }
     },
     "terraform": {
-      "command": "uvx",
-      "args": ["awslabs.terraform-mcp-server@latest"],
-      "env": { "FASTMCP_LOG_LEVEL": "ERROR" }
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "hashicorp/terraform-mcp-server:1.3.0"]
     },
     "databricks-docs": {
       "url": "https://developers.databricks.com/api/mcp"
