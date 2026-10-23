@@ -1,0 +1,61 @@
+{
+  "name": "Kiro DevOps Dev Container",
+  "build": { "dockerfile": "Dockerfile" },
+
+  // Non-root by design: commands the agent runs have limited blast radius.
+  "remoteUser": "vscode",
+
+  // Features keep tool installs declarative. The `:1` pins the Feature's major
+  // version; tool versions in the options float on "latest" until Step 10 pins them.
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/aws-cli:1": {},
+    "ghcr.io/devcontainers/features/terraform:1": {
+      "version": "latest",
+      "tflint": "latest",
+      "terragrunt": "latest",
+      "installTerraformDocs": true,
+      "installTFsec": true
+    },
+    // minikube disabled: kubectl and helm only, no local cluster.
+    "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": { "minikube": "none" },
+    "ghcr.io/devcontainers/features/python:1": { "version": "latest" },
+    // "lts" resolves to the current LTS line, not the "Current" line.
+    "ghcr.io/devcontainers/features/node:1": { "version": "lts" }
+  },
+
+  // Named volumes, not bind mounts: identical on Windows and Mac, no host-path
+  // assumptions, survive rebuilds, shared by any project using the same names.
+  // Trade-off: credentials are per machine and never shared between teammates.
+  "mounts": [
+    { "source": "kiro-config", "target": "/home/vscode/.kiro", "type": "volume" },
+    { "source": "kiro-cli-data", "target": "/home/vscode/.local/share/kiro-cli", "type": "volume" },
+    { "source": "aws-config", "target": "/home/vscode/.aws", "type": "volume" },
+    { "source": "databricks-config", "target": "/home/vscode/.databricks", "type": "volume" },
+    { "source": "terraform-plugin-cache", "target": "/home/vscode/.terraform.d/plugin-cache", "type": "volume" }
+  ],
+
+  "containerEnv": {
+    // ~/.databrickscfg is a single file and cannot be a volume, so redirect the
+    // config into the mounted ~/.databricks directory instead.
+    "DATABRICKS_CONFIG_FILE": "/home/vscode/.databricks/databrickscfg",
+    // Shared provider cache: avoids re-downloading providers on every init.
+    "TF_PLUGIN_CACHE_DIR": "/home/vscode/.terraform.d/plugin-cache",
+    // Disable the AWS CLI pager so output works in scripts and agent sessions.
+    "AWS_PAGER": ""
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "hashicorp.terraform",
+        "databricks.databricks",
+        "amazonwebservices.aws-toolkit-vscode",
+        "redhat.vscode-yaml",
+        "ms-python.python",
+        "timonwong.shellcheck"
+      ]
+    }
+  }
+}
