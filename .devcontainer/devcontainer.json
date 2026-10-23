@@ -15,8 +15,7 @@
       "version": "latest",
       "tflint": "latest",
       "terragrunt": "latest",
-      "installTerraformDocs": true,
-      "installTFsec": true
+      "installTerraformDocs": true
     },
     // minikube disabled: kubectl and helm only, no local cluster.
     "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": { "minikube": "none" },
