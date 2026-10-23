@@ -1,7 +1,7 @@
 # Base: Microsoft's Ubuntu dev container image. Provides the non-root `vscode`
-# user, git, sudo and common shell tooling. The floating `ubuntu` tag tracks the
-# latest LTS; Step 10 pins it to an exact tag once the build is verified.
-FROM mcr.microsoft.com/devcontainers/base:ubuntu
+# user, git, sudo and common shell tooling. Pinned to an exact Ubuntu release for
+# reproducible builds; bump it deliberately (see README "Updating versions").
+FROM mcr.microsoft.com/devcontainers/base:ubuntu26.04
 
 ARG USERNAME=vscode
 
@@ -17,9 +17,9 @@ RUN apt-get update \
        postgresql-client less vim-tiny dnsutils \
     && rm -rf /var/lib/apt/lists/*
 
-# yq (mikefarah). dpkg picks amd64 or arm64, so one Dockerfile serves Intel
-# Windows laptops and Apple Silicon Macs. Pinned to a version in Step 10.
-RUN curl -fsSL "https://github.com/mikefarah/yq/releases/latest/download/yq_linux_$(dpkg --print-architecture)" \
+# yq (mikefarah), pinned. dpkg picks amd64 or arm64, so one Dockerfile serves
+# Intel Windows laptops and Apple Silicon Macs.
+RUN curl -fsSL "https://github.com/mikefarah/yq/releases/download/v4.54.1/yq_linux_$(dpkg --print-architecture)" \
       -o /usr/local/bin/yq \
     && chmod +x /usr/local/bin/yq
 
